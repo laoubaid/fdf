@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 02:12:50 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/03/23 04:46:56 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/04/09 00:02:59 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,29 @@ int	ft_atoi(const char *str)
 	return (res * sing);
 }
 
+t_color	get_color(char *str)
+{
+	int				i;
+	unsigned int	color;
+	t_color			rgba;
+
+	i = 0;
+	while (str[i] && str[i] != ',')
+		i++;
+	if (str[i] == ',' && str[i + 1] == '0' && str[i + 2] == 'x')
+		color = hexa_dec(str + (i + 3));
+	else if (str[i] == ',' && str[i + 1])
+		color = ft_atoi(str + (i + 1));
+	else
+		color = (unsigned int)0x00FFFFFF;
+	rgba.ucol = color;
+	rgba.a = color >> 24 & 0xff;
+	rgba.r = color >> 16 & 0xff;
+	rgba.g = color >> 8 & 0xff;
+	rgba.b = color & 0xff;
+	return (rgba);
+}
+
 int	ft_recursive_power(int nb, int power)
 {
 	if (power < 0)
@@ -48,27 +71,26 @@ int	ft_recursive_power(int nb, int power)
 		return (nb * ft_recursive_power(nb, power - 1));
 }
 
-int    hexa_dec(char *hex)
+int	hexa_dec(char *hex)
 {
-    long long decimal;
-    int i = 0, len;
+	long long	decimal;
+	int			i;
+	int			len;
 
-    decimal = 0;
-
-    len = strlen(hex);
-    len--;
-
-    while (hex[i] != '\0')
-    {
-        if(hex[i]>='0' && hex[i]<='9')
-            decimal += (hex[i] - 48) * ft_recursive_power(16, len);
-        else if(hex[i]>='a' && hex[i]<='f')
-            decimal += (hex[i] - 97 + 10) * ft_recursive_power(16, len);
-        else if(hex[i]>='A' && hex[i]<='F')
-            decimal += (hex[i] - 65 + 10) * ft_recursive_power(16, len);
-        len--;
-        i++;
-    }
-    return (decimal);
+	decimal = 0;
+	i = 0;
+	len = ft_strlen(hex);
+	len--;
+	while (hex[i] != '\0')
+	{
+		if (hex[i] >= '0' && hex[i] <= '9')
+			decimal += (hex[i] - 48) * ft_recursive_power(16, len);
+		else if (hex[i] >= 'a' && hex[i] <= 'f')
+			decimal += (hex[i] - 97 + 10) * ft_recursive_power(16, len);
+		else if (hex[i] >= 'A' && hex[i] <= 'F')
+			decimal += (hex[i] - 65 + 10) * ft_recursive_power(16, len);
+		len--;
+		i++;
+	}
+	return (decimal);
 }
-

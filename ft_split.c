@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/07 14:58:59 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/03/19 23:19:36 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/04/12 19:07:53 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ static char	*count_chars(char const *s, char c, int *nbc, int *ns)
 	return (&ptr[i]);
 }
 
-static char	**ft_free(char **ptr)
+char	**ft_free(char **ptr)
 {
 	int	i;
 
@@ -114,16 +114,3 @@ char	**ft_split(char const *s, char c)
 		ptr[nword] = (NULL);
 	return (ptr);
 }
-// #include    <stdio.h>
-// int main()
-// {
-//     int i = 0;
-// 	char str[]  = "hello abdo     tets@ , m";
-//     char **ptr = ft_split(str, ' ');
-//     while (ptr[i] != NULL)
-//     {
-//         printf("%s\n",ptr[i]);
-//         i++;
-//     }
-//     return 0;
-// }

@@ -6,122 +6,118 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/23 04:04:28 by laoubaid          #+#    #+#             */
-/*   Updated: 2024/03/26 03:38:47 by laoubaid         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:22:02 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fdf.h"
 
-int    ft_strlen_line(char *str)
+t_map	**translate(char **str, int nline)
 {
-    int i;
+	int		i;
+	t_map	**tmp;
 
-    i = 0;
-    if (!str)
-        return (0);
-    while (str[i] && str[i] != '\n')
-        i++;
-    return (i);
-}
-char    **split_line(char **str, int *nline)
-{
-    char *ptr;
-    char *tmp;
-    char **res;
-    int i;
-    
-    i = 0;
-    ptr = *str;
-    *nline = ft_strlen_line(*str);
-    tmp = malloc((*nline + 1) * sizeof(char));
-    while (ptr[i] && ptr[i] != '\n')
-    {
-        tmp[i] = ptr[i];
-        i++;
-    }
-    tmp[i] = 0;
-    i++;
-    *str = &ptr[i];
-    res = ft_split(tmp, ' ');
-    return (res);
+	tmp = malloc(sizeof(t_map *) * (nline + 1));
+	i = 0;
+	while (str[i])
+	{
+		tmp[i] = malloc(sizeof(t_map));
+		tmp[i]->oz = ft_atoi(str[i]);
+		tmp[i]->color = get_color(str[i]);
+		i++;
+	}
+	tmp[i] = NULL;
+	return (tmp);
 }
 
-int get_color(char *str)
+t_map	***creat_map(char *str, int count)
 {
-    int i;
+	int		i;
+	int		nline;
+	char	*tmp;
+	char	**line;
+	t_map	***map;
 
-    i = 0;
-    while (str[i] && str[i] != ',')
-        i++;
-    if (str[i] == ',' && str[i + 1] == '0' && str[i + 2] == 'x')
-        return (hexa_dec(str + (i + 3)));
-    else
-        return (-1);
-    return (ft_atoi(str + (i + 1)));
+	i = 0;
+	tmp = str;
+	map = malloc((count + 1) * sizeof(t_map **));
+	while (i < count)
+	{
+		line = split_line(&tmp, &nline);
+		map[i] = translate(line, nline);
+		ft_free(line);
+		i++;
+	}
+	map[i] = NULL;
+	free(str);
+	return (map);
 }
 
-t_map   **translate(char **str, int nline)
+int	cal_lines(char *str)
 {
-    int i;
-    t_map   **tmp;
+	int	i;
+	int	count;
 
-    tmp = malloc(sizeof(t_map *) * (nline + 1));
-    i = 0;
-    while (str[i])
-    {
-        tmp[i] = malloc(sizeof(t_map));
-        tmp[i]->z = ft_atoi(str[i]);
-        tmp[i]->color = get_color(str[i]);
-        i++;
-    }
-    tmp[i] = NULL;
-    return (tmp);
+	i = 0;
+	count = 0;
+	if (str[i])
+		count++;
+	while (str[i])
+	{
+		if (str[i] == '\n')
+			count++;
+		i++;
+	}
+	return (count);
 }
 
-t_map ***creat_map(char *str, int count)
+char	*join_map(int fd, int size)
 {
-    int     i;
-    int     nline;
-    char    *tmp;
-    char    **line;
-    t_map    ***map;
+	char	*str;
+	char	tmp[1024];
+	int		read_size;
+	int		i;
+	int		j;
 
-    i = 0;
-    tmp = str;
-    map = malloc((count + 1) * sizeof(t_map **));
-    while (i < count)
-    {
-        line = split_line(&tmp, &nline);
-        map[i]= translate(line, nline);
-        i++;
-    }
-    map[i] = NULL;
-    return (map);
+	str = malloc(size + 1);
+	j = 0;
+	while (1)
+	{
+		read_size = read(fd, tmp, 1024);
+		if (read_size <= 0)
+			break ;
+		tmp[read_size] = 0;
+		i = 0;
+		while (tmp[i])
+		{
+			str[j++] = tmp[i++];
+		}
+	}
+	str[j] = 0;
+	close(fd);
+	return (str);
 }
 
-t_map ***get_map(char *input)
+t_map	***get_map(char *input)
 {
-    int fd;
-    int     count;
-    char *str;
-    char *tmp;
-    t_map ***map;
+	int		fd;
+	char	*str;
+	char	tmp[1024];
+	int		size;
+	int		read_size;
 
-    fd = open(input, O_RDONLY);
-    str = NULL;
-    tmp = NULL;
-    count = 0;
-    while (1)
-    {
-        free(tmp);
-        tmp = get_next_line(fd);
-        if (!tmp)
-            break ;
-        count++;
-        str = ft_strjoin(str, tmp);
-    }
-    close(fd);
-    // exit(0);
-    map = creat_map(str, count);
-    return (map);
+	size = 0;
+	read_size = 0;
+	fd = open(input, O_RDONLY);
+	while (1)
+	{
+		read_size = read(fd, tmp, 1024);
+		if (read_size <= 0)
+			break ;
+		size += read_size;
+	}
+	close(fd);
+	fd = open(input, O_RDONLY);
+	str = join_map(fd, size);
+	return (creat_map(str, cal_lines(str)));
 }
