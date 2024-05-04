@@ -6,7 +6,7 @@
 #    By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/09 01:40:25 by laoubaid          #+#    #+#              #
-#    Updated: 2024/04/28 16:28:15 by laoubaid         ###   ########.fr        #
+#    Updated: 2024/05/04 12:52:05 by laoubaid         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -42,34 +42,36 @@ OBJ_BONUS	=	$(patsubst $(SRC_DIR_BONUS)%.c, $(OBJ_DIR_BONUS)%.o, $(SRC_BONUS))
 all: $(NAME)
 
 $(NAME): $(OBJ) 
-	rm -rf $(NAME_BONUS)
-	touch $(NAME)
+	@rm -rf $(NAME_BONUS)
+	@touch $(NAME)
 	$(CC) $(OBJ) $(MLXFLAGS) -o $(TARGET)
 
 bonus : $(NAME_BONUS)
 
 $(NAME_BONUS): $(OBJ_BONUS)
-	rm -rf $(NAME)
-	touch $(NAME_BONUS)
+	@rm -rf $(NAME)
+	@touch $(NAME_BONUS)
 	$(CC) $(OBJ_BONUS) $(MLXFLAGS) -o $(TARGET)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
+	@mkdir -p $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c  $< -o $@
 
 $(OBJ_DIR_BONUS)%.o: $(SRC_DIR_BONUS)%.c
+	@mkdir -p $(OBJ_DIR_BONUS)
 	$(CC) $(CFLAGS) -c  $< -o $@
 
 clean:
-	rm -rf $(OBJ)
-	rm -rf $(OBJ_BONUS)
+	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR_BONUS)
 
 fclean: clean
-	rm -rf $(TARGET)
-	rm -rf $(NAME)
-	rm -rf $(NAME_BONUS)
+	@rm -rf $(TARGET)
+	@rm -rf $(NAME)
+	@rm -rf $(NAME_BONUS)
 
 re: fclean all
 
 .SECONDARY:
 
-.PHONY : bonus
+.PHONY : bonus all clean fclean re
