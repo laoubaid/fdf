@@ -39,5 +39,7 @@ make
 ```bash
 ./fdf maps/42.fdf
 ```
-
+![Diagram](imgs/t1.png)
+![Diagram](imgs/himalaya.png)
+![Diagram](imgs/close_up.png)
 
