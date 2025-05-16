@@ -6,7 +6,7 @@
 /*   By: laoubaid <laoubaid@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/19 15:05:01 by laoubaid          #+#    #+#             */
-/*   Updated: 2025/05/16 21:10:21 by laoubaid         ###   ########.fr       */
+/*   Updated: 2025/05/17 00:06:28 by laoubaid         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	main(int ac, char **av)
 		arg_error(-1);
 	}
 	vars.mlx = mlx_init();
-	vars.win = mlx_new_window(vars.mlx, WIDTH, HEIGHT, "fdf_bonus");
+	vars.win = mlx_new_window(vars.mlx, WIDTH, HEIGHT, "fdf");
 	img.img = mlx_new_image(vars.mlx, WIDTH, HEIGHT);
 	img.addr = mlx_get_data_addr(img.img, tmp, tmp + 1, &img.endian);
 	img.line_length = tmp[1];
